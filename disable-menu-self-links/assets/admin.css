@@ -1,0 +1,47 @@
+/**
+ * Admin styles for Disable Menu Self Links
+ *
+ * @package Disable_Menu_Self_Links
+ * @since   1.0
+ */
+
+/* Menu item custom field styling */
+.field-dmsl-enable-self-link {
+	padding: 12px 0 !important;
+	margin: 12px 0 !important;
+	border-top: 1px solid #ddd;
+}
+
+.field-dmsl-enable-self-link label {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	cursor: pointer;
+	font-weight: 600;
+	color: #1e1e1e;
+}
+
+.field-dmsl-enable-self-link input[type="checkbox"] {
+	margin: 0 !important;
+	cursor: pointer;
+}
+
+.field-dmsl-enable-self-link .description {
+	display: block;
+	margin-top: 8px;
+	margin-left: 28px;
+	color: #646970;
+	font-style: italic;
+	font-size: 13px;
+	line-height: 1.5;
+}
+
+/* Hover effect for better UX */
+.field-dmsl-enable-self-link label:hover {
+	color: #0073aa;
+}
+
+/* Better spacing in menu editor */
+.menu-item-settings .field-dmsl-enable-self-link {
+	clear: both;
+}

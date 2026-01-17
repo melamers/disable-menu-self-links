@@ -1,0 +1,38 @@
+/**
+ * Frontend styles for Disable Menu Self Links
+ *
+ * Prevents self-referencing links from being clickable
+ *
+ * @package Disable_Menu_Self_Links
+ * @since   1.0
+ */
+
+/* 
+ * Triple protection approach:
+ * 1. Self-referencing href (links to itself via #id)
+ * 2. CSS pointer-events: none
+ * 3. JavaScript preventDefault (loaded separately)
+ */
+
+/* Disable pointer events on self-referencing links */
+.current-menu-item a[href^="#"],
+.current_page_item a[href^="#"] {
+	pointer-events: none;
+	cursor: default;
+}
+
+/* Additional cursor styling for all states */
+.current-menu-item a[href^="#"]:hover,
+.current_page_item a[href^="#"]:hover,
+.current-menu-item a[href^="#"]:focus,
+.current_page_item a[href^="#"]:focus {
+	cursor: default;
+}
+
+/* Optional: Subtle visual feedback that current item is not clickable */
+/* Uncomment if you want to visually distinguish the current page */
+
+.current-menu-item a[href^="#"],
+.current_page_item a[href^="#"] {
+	opacity: 0.85;
+}
