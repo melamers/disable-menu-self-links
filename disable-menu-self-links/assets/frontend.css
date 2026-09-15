@@ -29,6 +29,12 @@
 	cursor: default;
 }
 
+/* Parent items keep pointer-events enabled (so hover opens the submenu), but the cursor should still signal the link itself is inert */
+.current-menu-item.menu-item-has-children a[href^="#"],
+.current_page_item.menu-item-has-children a[href^="#"] {
+	cursor: default;
+}
+
 /* Optional: Subtle visual feedback that current item is not clickable */
 /* Uncomment if you want to visually distinguish the current page */
 
