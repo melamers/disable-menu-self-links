@@ -9,7 +9,7 @@
  * Author:            Marcel Lamers
  * Author URI:        https://example.com
  * License:           GPL v2 or later
- * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
+ * License URI:       https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Text Domain:       disable-menu-self-links
  * Domain Path:       /languages
  */
