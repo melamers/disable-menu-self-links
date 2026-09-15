@@ -26,10 +26,21 @@ This plugin adds a checkbox option to each menu item: **"Disable Link to Self"**
 
 ## Installation
 
-1. Download the plugin folder
-2. Upload `disable-menu-self-links` to `/wp-content/plugins/`
-3. Activate through the 'Plugins' menu in WordPress
-4. Configure your menu items as needed
+Download the `disable-menu-self-links-<version>.zip` asset from the
+[latest release](https://github.com/melamers/disable-menu-self-links/releases/latest),
+then in WordPress go to **Plugins > Add New Plugin > Upload Plugin > Install Now**
+and activate it.
+
+To update an existing install, upload the newer zip the same way and choose
+**Replace current with uploaded**. Settings stored in the database survive it.
+
+> Do not use the green **Code > Download ZIP** button. That archive nests the
+> plugin folder one level too deep, so the WordPress uploader will not find a
+> valid plugin in it. The release asset has the correct layout.
+
+Installing by hand works too: unzip the release asset and upload the
+`disable-menu-self-links` folder to `/wp-content/plugins/`, then activate it
+through the Plugins menu.
 
 ## Usage
 

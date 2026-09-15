@@ -1,0 +1,60 @@
+name: Release
+
+# Builds the installable plugin zip and publishes it as a release asset.
+#
+# GitHub's own "Download ZIP" button produces <repo>-<branch>/ with the
+# plugin folder nested one level down, which the WordPress uploader
+# rejects. The asset built here has the plugin folder at the top level,
+# so it installs through Plugins > Add New Plugin > Upload Plugin.
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Lint and run tests
+        run: |
+          php -l disable-menu-self-links/disable-menu-self-links.php
+          php disable-menu-self-links/tests/test-has-children-map.php
+          php disable-menu-self-links/tests/test-unique-anchor-id.php
+
+      - name: Check the tag matches the plugin header version
+        run: |
+          tag_version="${GITHUB_REF_NAME#v}"
+          header_version=$(grep -m1 -E '^\s*\*\s*Version:' disable-menu-self-links/disable-menu-self-links.php | awk '{print $NF}')
+          echo "tag=${tag_version} header=${header_version}"
+          if [ "$tag_version" != "$header_version" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match the plugin header version ${header_version}."
+            exit 1
+          fi
+
+      - name: Build the plugin zip
+        run: |
+          zip_name="disable-menu-self-links-${GITHUB_REF_NAME#v}.zip"
+          git archive --format=zip -o "$zip_name" HEAD disable-menu-self-links/
+          unzip -l "$zip_name"
+          echo "ZIP_NAME=$zip_name" >> "$GITHUB_ENV"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" "$ZIP_NAME" \
+            --title "$GITHUB_REF_NAME" \
+            --notes "Download \`$ZIP_NAME\` below, then in WordPress go to Plugins > Add New Plugin > Upload Plugin > Install Now.
+
+          Updating an existing install: the same upload offers **Replace current with uploaded**. Settings stored in the database survive it.
+
+          Do not use the green Code button's \"Download ZIP\": it nests the plugin folder one level too deep and WordPress will refuse it.
+
+          See the changelog in the README for what changed."
