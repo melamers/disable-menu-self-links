@@ -3,7 +3,7 @@
  * Plugin Name:       Disable Menu Self Links
  * Plugin URI:        https://example.com/disable-menu-self-links
  * Description:       Optionally disable self-referencing links in WordPress menus using self-anchors with multiple fallback protections.
- * Version:           1.0
+ * Version:           1.2.1
  * Requires at least: 5.0
  * Requires PHP:      7.4
  * Author:            Marcel Lamers
