@@ -196,6 +196,9 @@ When you delete the plugin (not just deactivate):
 
 ## Changelog
 
+### Version 1.2.2
+- A menu item rendered in more than one nav menu on the same page no longer emits duplicate `id` attributes; the first render keeps the bare ID and later renders get a numeric suffix
+
 ### Version 1.2.1
 - Parent menu items with a disabled self-link now keep working hover-triggered submenus (previously `pointer-events: none` blocked hover on the whole item, including its dropdown)
 - Has-children detection is now computed by the plugin itself from menu item relationships, instead of depending on the theme's walker to emit a `menu-item-has-children` class

@@ -3,7 +3,7 @@
  * Plugin Name:       Disable Menu Self Links
  * Plugin URI:        https://example.com/disable-menu-self-links
  * Description:       Optionally disable self-referencing links in WordPress menus using self-anchors with multiple fallback protections.
- * Version:           1.2.1
+ * Version:           1.2.2
  * Requires at least: 5.0
  * Requires PHP:      7.4
  * Author:            Marcel Lamers
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'DMSL_VERSION', '1.2.1' );
+define( 'DMSL_VERSION', '1.2.2' );
 define( 'DMSL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DMSL_URL', plugin_dir_url( __FILE__ ) );
 define( 'DMSL_DEBUG', false ); // Set to true for debugging
@@ -39,6 +39,17 @@ class Disable_Menu_Self_Links {
 	 * @var Disable_Menu_Self_Links
 	 */
 	private static $instance = null;
+
+	/**
+	 * Anchor IDs already issued during this request.
+	 *
+	 * Keyed by ID, so the same menu item rendered in more than one nav menu
+	 * on a page does not emit duplicate id attributes.
+	 *
+	 * @since 1.2.2
+	 * @var array
+	 */
+	private $issued_anchor_ids = array();
 
 	/**
 	 * Get plugin instance.
@@ -388,9 +399,10 @@ class Disable_Menu_Self_Links {
 				$anchor_id = $existing_id;
 				$id_action = 'preserved';
 			} else {
-				// Generate new ID from page slug
+				// Generate new ID from page slug, de-duplicated across every
+				// nav menu rendered on this page.
 				$slug = $this->get_page_slug( $item );
-				$anchor_id = sanitize_html_class( 'dmsl-' . $slug );
+				$anchor_id = $this->unique_anchor_id( sanitize_html_class( 'dmsl-' . $slug ) );
 				$id_action = 'generated';
 			}
 			
@@ -431,6 +443,47 @@ class Disable_Menu_Self_Links {
 		}
 		
 		return $item_output;
+	}
+
+	/**
+	 * Return an anchor ID that has not been issued yet during this request.
+	 *
+	 * A menu item can render more than once on a page, for example when a
+	 * theme outputs a horizontal nav and a separate mobile or vertical nav
+	 * from the same menu. Deriving the ID from the page slug alone gave every
+	 * one of those renders the same id attribute, which is invalid HTML and
+	 * misdirects in-page anchor jumps and assistive technology.
+	 *
+	 * The first use of a base ID returns it unchanged, so single-nav pages are
+	 * unaffected and any existing deep link to the old ID keeps resolving.
+	 * Later uses get a numeric suffix. Each candidate is checked against the
+	 * IDs already issued, so a genuine page slug such as 'resources-2' and a
+	 * generated 'dmsl-resources-2' cannot land on the same value.
+	 *
+	 * Only generated IDs pass through here. An ID the theme already placed on
+	 * the <a> is preserved untouched, as before.
+	 *
+	 * @since 1.2.2
+	 * @param string $base_id Anchor ID derived from the page slug.
+	 * @return string Anchor ID unique within this request.
+	 */
+	public function unique_anchor_id( $base_id ) {
+		if ( ! isset( $this->issued_anchor_ids[ $base_id ] ) ) {
+			$this->issued_anchor_ids[ $base_id ] = true;
+			return $base_id;
+		}
+
+		$suffix    = 2;
+		$candidate = $base_id . '-' . $suffix;
+
+		while ( isset( $this->issued_anchor_ids[ $candidate ] ) ) {
+			$suffix++;
+			$candidate = $base_id . '-' . $suffix;
+		}
+
+		$this->issued_anchor_ids[ $candidate ] = true;
+
+		return $candidate;
 	}
 
 	/**
