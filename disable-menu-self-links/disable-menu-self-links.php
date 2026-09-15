@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'DMSL_VERSION', '1.2.0' );
+define( 'DMSL_VERSION', '1.2.1' );
 define( 'DMSL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DMSL_URL', plugin_dir_url( __FILE__ ) );
 define( 'DMSL_DEBUG', false ); // Set to true for debugging
@@ -288,7 +288,13 @@ class Disable_Menu_Self_Links {
 	 * @return array Modified menu items.
 	 */
 	public function modify_menu_items( $items, $args ) {
+		$has_children_map = self::compute_has_children_map( $items );
+
 		foreach ( $items as $item ) {
+			// Mark whether this item has children, so the frontend can keep
+			// hover-triggered submenus working even when its own link is disabled.
+			$item->dmsl_has_children = isset( $has_children_map[ $item->ID ] );
+
 			// Check if self link should be disabled
 			if ( '0' === $item->enable_self_link || 0 === $item->enable_self_link ) {
 				// Check if this is the current page
@@ -298,11 +304,37 @@ class Disable_Menu_Self_Links {
 				}
 			}
 		}
-		
+
 		// Now filter the actual HTML output
 		add_filter( 'walker_nav_menu_start_el', array( $this, 'modify_menu_item_html' ), 10, 4 );
-		
+
 		return $items;
+	}
+
+	/**
+	 * Build a map of menu item IDs that have at least one child item.
+	 *
+	 * Determines this from the parent/child relationships already present
+	 * in $items, instead of relying on the theme's walker to emit a
+	 * 'menu-item-has-children' class, which WordPress core does not
+	 * guarantee on every walker's frontend output.
+	 *
+	 * @since 1.2.1
+	 * @param array $items Menu items.
+	 * @return array Map of parent item ID => true for items that have children.
+	 */
+	public static function compute_has_children_map( $items ) {
+		$has_children = array();
+
+		foreach ( $items as $item ) {
+			$parent_id = isset( $item->menu_item_parent ) ? (string) $item->menu_item_parent : '';
+
+			if ( '' !== $parent_id && '0' !== $parent_id ) {
+				$has_children[ $parent_id ] = true;
+			}
+		}
+
+		return $has_children;
 	}
 
 	/**
@@ -315,7 +347,7 @@ class Disable_Menu_Self_Links {
 	private function is_current_page( $item ) {
 		// WordPress already determines this - check the classes
 		if ( is_array( $item->classes ) ) {
-			return in_array( 'current-menu-item', $item->classes, true ) || 
+			return in_array( 'current-menu-item', $item->classes, true ) ||
 			       in_array( 'current_page_item', $item->classes, true );
 		}
 		return false;
@@ -362,25 +394,30 @@ class Disable_Menu_Self_Links {
 				$id_action = 'generated';
 			}
 			
-			$this->debug_log( 'Modifying link to self-reference', array( 
+			$this->debug_log( 'Modifying link to self-reference', array(
 				'title'     => $item->title,
 				'id'        => $anchor_id,
 				'id_action' => $id_action,
 			) );
-			
+
+			// Flag parent items on the <a> itself, so the frontend CSS can keep
+			// hover-triggered submenus working without depending on the theme's
+			// walker to emit a 'menu-item-has-children' class.
+			$data_attr = ! empty( $item->dmsl_has_children ) ? ' data-dmsl-has-children="1"' : '';
+
 			// Replace href with self-referencing anchor
 			if ( $existing_id ) {
 				// ID already exists, just replace href
 				$modified_output = preg_replace(
 					'/(<a\s[^>]*)href=["\']([^"\']*)["\']([^>]*>)/i',
-					'$1href="#' . esc_attr( $anchor_id ) . '"$3',
+					'$1href="#' . esc_attr( $anchor_id ) . '"' . $data_attr . '$3',
 					$item_output
 				);
 			} else {
 				// No ID exists, add both href and id
 				$modified_output = preg_replace(
 					'/(<a\s[^>]*)href=["\']([^"\']*)["\']([^>]*>)/i',
-					'$1href="#' . esc_attr( $anchor_id ) . '" id="' . esc_attr( $anchor_id ) . '"$3',
+					'$1href="#' . esc_attr( $anchor_id ) . '" id="' . esc_attr( $anchor_id ) . '"' . $data_attr . '$3',
 					$item_output
 				);
 			}

@@ -14,31 +14,20 @@
  * 3. JavaScript preventDefault (loaded separately)
  */
 
-/* Disable pointer events on self-referencing links (not on parent items, so hover-triggered submenus still open) */
-.current-menu-item:not(.menu-item-has-children) a[href^="#"],
-.current_page_item:not(.menu-item-has-children) a[href^="#"] {
+/* Disable pointer events on self-referencing links (not on parent items, so hover-triggered submenus still open). data-dmsl-has-children is set by the plugin's own PHP, not the theme, so this does not depend on the theme's walker emitting menu-item-has-children. */
+.current-menu-item a[href^="#"]:not([data-dmsl-has-children]),
+.current_page_item a[href^="#"]:not([data-dmsl-has-children]) {
 	pointer-events: none;
 	cursor: default;
 }
 
-/* Additional cursor styling for all states */
-.current-menu-item:not(.menu-item-has-children) a[href^="#"]:hover,
-.current_page_item:not(.menu-item-has-children) a[href^="#"]:hover,
-.current-menu-item:not(.menu-item-has-children) a[href^="#"]:focus,
-.current_page_item:not(.menu-item-has-children) a[href^="#"]:focus {
-	cursor: default;
-}
-
 /* Parent items keep pointer-events enabled (so hover opens the submenu), but the cursor should still signal the link itself is inert */
-.current-menu-item.menu-item-has-children a[href^="#"],
-.current_page_item.menu-item-has-children a[href^="#"] {
+a[href^="#"][data-dmsl-has-children] {
 	cursor: default;
 }
 
-/* Optional: Subtle visual feedback that current item is not clickable */
-/* Uncomment if you want to visually distinguish the current page */
-
-.current-menu-item:not(.menu-item-has-children) a[href^="#"],
-.current_page_item:not(.menu-item-has-children) a[href^="#"] {
+/* Subtle visual feedback that the current page's link is not clickable */
+.current-menu-item a[href^="#"]:not([data-dmsl-has-children]),
+.current_page_item a[href^="#"]:not([data-dmsl-has-children]) {
 	opacity: 0.85;
 }
