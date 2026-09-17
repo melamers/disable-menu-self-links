@@ -222,6 +222,9 @@ Translations appear once the site language matches the locale (Settings > Genera
 
 ## Changelog
 
+### Version 1.2.4
+- Plugin URI now points at the GitHub repository and Author URI at kikkergroep.nl, replacing the example.com placeholders from the initial scaffold
+
 ### Version 1.2.3
 - Added a POT template and a Dutch (nl_NL) translation for the menu editor strings
 - Plugin name and description on the plugins screen now run through the same text domain

@@ -1,13 +1,13 @@
 <?php
 /**
  * Plugin Name:       Disable Menu Self Links
- * Plugin URI:        https://example.com/disable-menu-self-links
+ * Plugin URI:        https://github.com/melamers/disable-menu-self-links
  * Description:       Optionally disable self-referencing links in WordPress menus using self-anchors with multiple fallback protections.
- * Version:           1.2.3
+ * Version:           1.2.4
  * Requires at least: 5.0
  * Requires PHP:      7.4
  * Author:            Marcel Lamers
- * Author URI:        https://example.com
+ * Author URI:        https://www.kikkergroep.nl
  * License:           GPL v2 or later
  * License URI:       https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
  * Text Domain:       disable-menu-self-links
@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 // Plugin constants
-define( 'DMSL_VERSION', '1.2.3' );
+define( 'DMSL_VERSION', '1.2.4' );
 define( 'DMSL_PATH', plugin_dir_path( __FILE__ ) );
 define( 'DMSL_URL', plugin_dir_url( __FILE__ ) );
 define( 'DMSL_DEBUG', false ); // Set to true for debugging
