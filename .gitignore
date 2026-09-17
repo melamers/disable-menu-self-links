@@ -1,0 +1,5 @@
+# macOS
+.DS_Store
+
+# Locally downloaded release assets
+*.zip
