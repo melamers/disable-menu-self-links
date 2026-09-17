@@ -205,7 +205,26 @@ When you delete the plugin (not just deactivate):
 2. Menu items return to default WordPress behavior
 3. No database tables are left behind
 
+## Translations
+
+The plugin loads translations from its own `languages/` folder, using the text domain `disable-menu-self-links`.
+
+- Template: `languages/disable-menu-self-links.pot`
+- Dutch: `languages/disable-menu-self-links-nl_NL.po` and `languages/disable-menu-self-links-nl_NL.mo`
+
+To add a locale, copy the POT to `disable-menu-self-links-<locale>.po`, translate the strings, then compile it:
+
+```bash
+msgfmt -o disable-menu-self-links-<locale>.mo disable-menu-self-links-<locale>.po
+```
+
+Translations appear once the site language matches the locale (Settings > General > Site Language).
+
 ## Changelog
+
+### Version 1.2.3
+- Added a POT template and a Dutch (nl_NL) translation for the menu editor strings
+- Plugin name and description on the plugins screen now run through the same text domain
 
 ### Version 1.2.2
 - A menu item rendered in more than one nav menu on the same page no longer emits duplicate `id` attributes; the first render keeps the bare ID and later renders get a numeric suffix
