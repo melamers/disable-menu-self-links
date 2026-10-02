@@ -27,6 +27,7 @@ jobs:
           php -l disable-menu-self-links/disable-menu-self-links.php
           php disable-menu-self-links/tests/test-has-children-map.php
           php disable-menu-self-links/tests/test-unique-anchor-id.php
+          php disable-menu-self-links/tests/test-frontend-css.php
 
       - name: Check the tag matches the plugin header version
         run: |

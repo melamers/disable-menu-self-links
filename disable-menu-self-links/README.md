@@ -125,7 +125,7 @@ Useful for one-page sites where menu items are anchor links
 
 ## CSS Styling Example
 
-You can style non-clickable current page items differently:
+You can style non-clickable current page items differently. Since 1.2.5 the plugin leaves their colour and opacity to the theme, so a rule like this is the way to dim them; check that the result still meets the 4.5:1 contrast minimum:
 
 ```css
 /* Normal menu link */
@@ -221,6 +221,9 @@ msgfmt -o disable-menu-self-links-<locale>.mo disable-menu-self-links-<locale>.p
 Translations appear once the site language matches the locale (Settings > General > Site Language).
 
 ## Changelog
+
+### Version 1.2.5
+- The current page's menu link no longer gets `opacity: 0.85` from the plugin, so it keeps the theme's link colour and contrast; dimming is now opt-in through your own CSS (see CSS Styling Example)
 
 ### Version 1.2.4
 - Plugin URI now points at the GitHub repository and Author URI at kikkergroep.nl, replacing the example.com placeholders from the initial scaffold

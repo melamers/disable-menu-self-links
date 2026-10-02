@@ -25,9 +25,3 @@
 a[href^="#"][data-dmsl-has-children] {
 	cursor: default;
 }
-
-/* Subtle visual feedback that the current page's link is not clickable */
-.current-menu-item a[href^="#"]:not([data-dmsl-has-children]),
-.current_page_item a[href^="#"]:not([data-dmsl-has-children]) {
-	opacity: 0.85;
-}
